@@ -53,32 +53,22 @@ page = st.sidebar.radio("📂 Navigate", ["Front Page", "Correlation Analysis", 
 if page == "Front Page":
     st.title("📊 Stock Analysis Dashboard")
 
-    # Volatility
     volatility = returns_df.std().sort_values(ascending=False)
     top10_volatility = volatility.head(10)
     st.subheader("1️⃣ Top 10 Volatile Stocks")
     st.dataframe(top10_volatility)
-
     top10_volatility_df = top10_volatility.reset_index()
     top10_volatility_df.columns = ["Ticker", "Volatility"]
     st.bar_chart(top10_volatility_df.set_index("Ticker"))
-
-    # Cumulative returns
+    
     final_cumulative = cumulative_returns.iloc[-1].sort_values(ascending=False)
     top5_cumulative = final_cumulative.head(5).index.tolist()
-
     st.subheader("2️⃣ Cumulative Return Over Time (Top 5 Stocks)")
     st.line_chart(cumulative_returns[top5_cumulative])
-
-    #st.subheader("📋 Final Cumulative Returns Table (Top 5 Stocks)")
-    #cumulative_table = final_cumulative.loc[top5_cumulative].reset_index()
-    #cumulative_table.columns = ["Ticker", "FinalCumulativeReturn"]
-    #st.dataframe(cumulative_table)
 
     if sector_perf is not None and not sector_perf.empty:
         st.subheader("3️⃣ Sector-wise Yearly Returns")
         st.dataframe(sector_perf)
-
         st.subheader("📉 Sector-wise Yearly Returns (Bar Chart)")
         bar_data = sector_perf.pivot(index="Sector", columns="Year", values="YearlyReturn")
         st.bar_chart(bar_data)
@@ -90,8 +80,6 @@ elif page == "Correlation Analysis":
 
     st.subheader("📊 Correlation Matrix of Stock Returns")
     st.dataframe(corr_matrix)
-
-
     corr_pairs = (
         corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
         .stack()
@@ -119,13 +107,11 @@ elif page == "Monthly Gainers & Losers":
     st.title("📈 Monthly Top 5 Gainers & Losers")
 
     selected_month = st.selectbox("Select Month", monthly_returns["YearMonth"].unique())
-    
     gainers = top_gainers[top_gainers["YearMonth"] == selected_month]
     losers = top_losers[top_losers["YearMonth"] == selected_month]
 
     st.subheader(f"📅 {selected_month} — Top 5 Gainers & Losers")
     fig, axes = plt.subplots(1, 2, figsize=(12,5))
-
     axes[0].bar(gainers["Ticker"], gainers["MonthlyReturn"], color="green")
     axes[0].set_title("Top 5 Gainers")
     axes[0].set_ylabel("Monthly Return (%)")
@@ -134,5 +120,4 @@ elif page == "Monthly Gainers & Losers":
     axes[1].bar(losers["Ticker"], losers["MonthlyReturn"], color="red")
     axes[1].set_title("Top 5 Losers")
     axes[1].tick_params(axis="x", rotation=45)
-
     st.pyplot(fig)
