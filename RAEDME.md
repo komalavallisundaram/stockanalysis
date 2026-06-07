@@ -76,7 +76,7 @@ Example Visuals
 - Yearly Return by Sector
 - Volatility by Ticker
 - Monthly Return by Ticker and YearMonth
-- Correlation Heatmap
+- Correlation analysis
 
 PROJECT STRUCTURE:
 stock-analysis-dashboard/
